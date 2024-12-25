@@ -62,6 +62,7 @@ void deleteFaculty(int id) {
     free(temp);
     printf("Faculty deleted successfully!\n");
 }
+
 void updateFaculty(int id) {
     struct Faculty *temp = facultyHead;
 
@@ -74,16 +75,41 @@ void updateFaculty(int id) {
         return;
     }
 
-    printf("Enter new name: ");
-    scanf(" %[^\n]", temp->name);
-    printf("Enter new department: ");
-    scanf(" %[^\n]", temp->department);
-    printf("Enter new age: ");
-    scanf("%d", &temp->age);
-    printf("Enter new qualification: ");
-    scanf(" %[^\n]", temp->qualification);
+    int choice;
+    printf("What would you like to update?\n");
+    printf("1. Name\n");
+    printf("2. Department\n");
+    printf("3. Age\n");
+    printf("4. Qualification\n");
+    printf("Enter your choice: ");
+    scanf("%d", &choice);
+
+    switch (choice) {
+    case 1:
+        printf("Enter new name: ");
+        scanf(" %[^\n]", temp->name);
+        break;
+    case 2:
+        printf("Enter new department: ");
+        scanf(" %[^\n]", temp->department);
+        break;
+    case 3:
+        printf("Enter new age: ");
+        scanf("%d", &temp->age);
+        break;
+    case 4:
+        printf("Enter new qualification: ");
+        scanf(" %[^\n]", temp->qualification);
+        break;
+    default:
+        printf("Invalid choice!\n");
+        return;
+    }
+
     printf("Faculty updated successfully!\n");
 }
+
+
 
 void displayFacultyDetails() {
     if (facultyHead == NULL) {

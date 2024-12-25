@@ -294,8 +294,6 @@ int mainprogram() {
             saveFeesToFile("fees.txt");
             saveSectionsToFile("section.txt");
             break;
-
-
         case EXIT_PROGRAM:
             printf("Exiting the program. Goodbye!\n");
             return 0;

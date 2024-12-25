@@ -63,6 +63,7 @@ void deleteStudent(int id) {
 
 void updateStudent(int id) {
     struct Student *temp = studentHead;
+
     while (temp != NULL && temp->id != id) {
         temp = temp->next;
     }
@@ -72,12 +73,32 @@ void updateStudent(int id) {
         return;
     }
 
-    printf("Enter new name: ");
-    scanf(" %[^\n]", temp->name);
-    printf("Enter new age: ");
-    scanf("%d", &temp->age);
-    printf("Enter new contact number: ");
-    scanf(" %[^\n]", temp->contactNumber);
+    int choice;
+    printf("Select the field to update:\n");
+    printf("1. Name\n");
+    printf("2. Age\n");
+    printf("3. Contact Number\n");
+    printf("Enter your choice: ");
+    scanf("%d", &choice);
+
+    switch (choice) {
+    case 1:
+        printf("Enter new name: ");
+        scanf(" %[^\n]", temp->name);
+        break;
+    case 2:
+        printf("Enter new age: ");
+        scanf("%d", &temp->age);
+        break;
+    case 3:
+        printf("Enter new contact number: ");
+        scanf(" %[^\n]", temp->contactNumber);
+        break;
+    default:
+        printf("Invalid choice! Please select a valid option.\n");
+        return;
+    }
+
     printf("Student updated successfully!\n");
 }
 

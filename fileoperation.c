@@ -191,6 +191,3 @@ void loadSectionsFromFile(const char *filename) {
     fclose(file);
     printf("Sections loaded successfully from %s.\n", filename);
 }
-
-
-
