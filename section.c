@@ -3,6 +3,7 @@
 #include <string.h>
 #include "section.h"
 #include "student.h"
+#include "fileoperation.h"
 
 struct Section *sectionHead = NULL;
 
@@ -16,6 +17,8 @@ void addSectionToList(struct Section *newSection) {
         }
         temp->next = newSection;
     }
+
+    writeSectionToFile("sections.dat");
 }
 
 void insertSection(int studentID, int section_id, const char *section_name) {
@@ -48,8 +51,8 @@ void insertSection(int studentID, int section_id, const char *section_name) {
     newSection->next = NULL;
 
     addSectionToList(newSection);
-
-    printf("Section record for student ID %d added successfully!\n", studentID);
+    writeSectionToFile("sections.dat");
+    printf("Section record for student ID %d added successfully and written to file!\n", studentID);
 }
 
 void displaySectionDetails() {

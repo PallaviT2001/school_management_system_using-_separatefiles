@@ -17,13 +17,11 @@ void updateStudent(int id);
 void displayStudentDetails();
 void sortStudentsByID();
 void sortStudentsByName();
-
 void addStudentToList(struct Student *newStudent);
 int getTotalStudentCount();
+void searchStudentById(int id);
 
 struct Student* mergeSortedLists(struct Student* left, struct Student* right);
 struct Student* getMiddle(struct Student* head);
-
-void searchStudentById(int id);
 
 #endif

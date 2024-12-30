@@ -13,7 +13,6 @@ enum MainMenuChoice {
     FACULTY_OPERATIONS,
     FEES_OPERATIONS,
     SECTION_OPERATIONS,
-    SAVE_FILE,
     EXIT_PROGRAM
 };
 
@@ -54,10 +53,13 @@ enum SectionMenuChoice {
 };
 
 int mainprogram() {
-    loadStudentsFromFile("student.txt");
-    loadFacultyFromFile("faculty.txt");
-    loadFeesFromFile("fees.txt");
-    loadSectionsFromFile("section.txt");
+
+    //createfiles();
+
+    loadFromFile("students.dat");
+    loadFacultyFromFile("faculty.dat");
+    loadSectionFromFile("sections.dat");
+    loadFeesFromFile("fees.dat");
 
     if (!adminLogin()) {
         return 1;
@@ -69,7 +71,7 @@ int mainprogram() {
         printf("2. Perform Faculty Operations\n");
         printf("3. Perform Fees Operations\n");
         printf("4. Perform Section Operations\n");
-        printf("5. Save all data to file\n");
+        //printf("5. Save all data to file\n");
         printf("6. Exit\n");
         printf("Enter your choice: ");
         scanf("%d", &choice);
@@ -288,12 +290,6 @@ int mainprogram() {
             }
             break;
         }
-        case SAVE_FILE:
-            saveStudentsToFile("student.txt");
-            saveFacultyToFile("faculty.txt");
-            saveFeesToFile("fees.txt");
-            saveSectionsToFile("section.txt");
-            break;
         case EXIT_PROGRAM:
             printf("Exiting the program. Goodbye!\n");
             return 0;

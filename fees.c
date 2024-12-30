@@ -1,9 +1,11 @@
-#include "fees.h"
-#include "student.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include "fileoperation.h"
+#include "fees.h"
+#include "student.h"
 
 struct Fees *feesHead = NULL;
+FILE *file;
 
 void addFeesToList(struct Fees *newFees) {
     if (feesHead == NULL) {
@@ -15,6 +17,8 @@ void addFeesToList(struct Fees *newFees) {
         }
         temp->next = newFees;
     }
+
+    writeFeesToFile("fees.dat");
 }
 
 void insertFees(int studentID, int receipt_number, float paid_amount) {
@@ -46,13 +50,13 @@ void insertFees(int studentID, int receipt_number, float paid_amount) {
     newFees->next = NULL;
 
     addFeesToList(newFees);
-
-    printf("Fees record for student ID %d added successfully!\n", studentID);
+    writeFeesToFile("fees.dat");
+    printf("Fee record for student ID %d added successfully and written to file!\n", studentID);
 }
 
 void displayFeesDetails() {
     if (feesHead == NULL) {
-        printf("No fees records available.\n");
+        printf("No fee records available.\n");
         return;
     }
 
@@ -60,12 +64,10 @@ void displayFeesDetails() {
 
     struct Fees *temp = feesHead;
     while (temp != NULL) {
-        printf("Receipt Number: %d, Paid Amount: %.2f\n",
-               temp->receipt_number, temp->paid_amount);
+        printf("Receipt Number: %d, Paid Amount: %.2f\n", temp->receipt_number, temp->paid_amount);
 
         if (temp->studentDetails != NULL) {
             struct Student *student = temp->studentDetails;
-
             printf("Student ID: %d, Name: %s, Age: %d, Contact Number: %s\n",
                    student->id,
                    student->name,

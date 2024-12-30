@@ -1,193 +1,212 @@
 #include "fileoperation.h"
-#include "student.h"
-#include "faculty.h"
-#include "fees.h"
-#include "section.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "student.h"
+#include "faculty.h"
+#include "section.h"
+#include "fees.h"
 
-void saveStudentsToFile(const char *filename) {
-    FILE *file = fopen(filename, "w");
-    if (file == NULL) {
-        perror("Could not open file to save students.");
-        return;
-    }
-    struct Student *student = studentHead;
-    int studentCount = getTotalStudentCount();
-    fprintf(file, "%d\n", studentCount);
-    while (student != NULL) {
-        fprintf(file, "%d %s %d %s\n", student->id, student->name, student->age, student->contactNumber);
-        student = student->next;
-    }
-    fclose(file);
-    printf("Students saved successfully to %s.\n", filename);
-}
-
-void saveFacultyToFile(const char *filename) {
-    FILE *file = fopen(filename, "w");
-    if (file == NULL) {
-        perror("Could not open file to save faculty.");
-        return;
-    }
-    struct Faculty *faculty = facultyHead;
-    int facultyCount = 0;
-    while (faculty != NULL) {
-        facultyCount++;
-        faculty = faculty->next;
-    }
-    fprintf(file, "%d\n", facultyCount);
-
-    faculty = facultyHead;
-    while (faculty != NULL) {
-        fprintf(file, "%d %s %s %d %s\n", faculty->id, faculty->name, faculty->department, faculty->age, faculty->qualification);
-        faculty = faculty->next;
-    }
-    fclose(file);
-    printf("Faculty saved successfully to %s.\n", filename);
-}
-
-void saveFeesToFile(const char *filename) {
-    FILE *file = fopen(filename, "w");
-    if (file == NULL) {
-        perror("Could not open file to save fees.");
-        return;
-    }
-    struct Fees *fees = feesHead;
-    int feesCount = 0;
-    while (fees != NULL) {
-        feesCount++;
-        fees = fees->next;
-    }
-    fprintf(file, "%d\n", feesCount);
-
-    fees = feesHead;
-    while (fees != NULL) {
-        fprintf(file, "%d %f %d %s %d %s\n", fees->receipt_number, fees->paid_amount,
-                fees->studentDetails->id, fees->studentDetails->name,
-                fees->studentDetails->age, fees->studentDetails->contactNumber);
-        fees = fees->next;
-    }
-    fclose(file);
-    printf("Fees saved successfully to %s.\n", filename);
-}
-void saveSectionsToFile(const char *filename) {
-    FILE *file = fopen(filename, "w");
-    if (file == NULL) {
-        perror("Could not open file to save sections.");
-        return;
-    }
-    struct Section *section = sectionHead;
-    int sectionCount = 0;
-    while (section != NULL) {
-        sectionCount++;
-        section = section->next;
-    }
-    fprintf(file, "%d\n", sectionCount);
-
-    section = sectionHead;
-    while (section != NULL) {
-        fprintf(file, "%d %s %d %s %d %s\n", section->section_id, section->section_name,
-                section->studentDetails->id, section->studentDetails->name,
-                section->studentDetails->age, section->studentDetails->contactNumber);
-        section = section->next;
-    }
-    fclose(file);
-    printf("Sections saved successfully to %s.\n", filename);
-}
-
-void loadStudentsFromFile(const char *filename) {
-    FILE *file = fopen(filename, "r");
-    if (file == NULL) {
-        perror("Could not open file to load students.");
-        return;
-    }
-    int count;
-    fscanf(file, "%d", &count);
-    for (int i = 0; i < count; i++) {
-        struct Student *newStudent = (struct Student *)malloc(sizeof(struct Student));
-        if (newStudent == NULL) {
-            perror("Memory allocation failed for a student!");
-            fclose(file);
-            exit(1);
+struct Student *findStudentById(int student_id) {
+    struct Student *temp = studentHead;
+    while (temp != NULL) {
+        if (temp->id == student_id) {
+            return temp;
         }
-        fscanf(file, "%d %s %d %s", &newStudent->id, newStudent->name, &newStudent->age, newStudent->contactNumber);
-        newStudent->next = NULL;
-        addStudentToList(newStudent);
+        temp = temp->next;
     }
+    return NULL;
+}
+
+FILE *openFile(const char *filename) {
+    FILE *file = fopen(filename, "r+");
+    if (file == NULL) {
+        file = fopen(filename, "w+");
+        if (file == NULL) {
+            printf("Error: Could not open or create the file: %s\n", filename);
+            return NULL;
+        }
+    }
+    return file;
+}
+
+void loadFromFile(const char *filename) {
+    FILE *file = openFile(filename);
+    if (file == NULL) {
+        return;
+    }
+
+    int id, age;
+    char name[50], contactNumber[20];
+    while (fscanf(file, "%d %49s %d %19s", &id, name, &age, contactNumber) != EOF) {
+        insertStudent(id, name, age, contactNumber);
+    }
+
     fclose(file);
-    printf("Students loaded successfully from %s.\n", filename);
+    printf("Data loaded successfully from file.\n");
+}
+
+void writeToFile(const char *filename) {
+    FILE *file = openFile(filename);
+    if (file == NULL) {
+        return;  // If file couldn't be opened, return
+    }
+
+    struct Student *temp = studentHead;
+    while (temp != NULL) {
+        fprintf(file, "%d %s %d %s\n", temp->id, temp->name, temp->age, temp->contactNumber);
+        temp = temp->next;
+    }
+
+    fclose(file);
+    printf("Data written to file successfully.\n");
+}
+
+void saveStudentData() {
+    writeToFile("students.dat");
 }
 
 void loadFacultyFromFile(const char *filename) {
-    FILE *file = fopen(filename, "r");
+    FILE *file = openFile(filename);
     if (file == NULL) {
-        perror("Could not open file to load faculty.");
         return;
     }
-    int count;
-    fscanf(file, "%d", &count);
-    for (int i = 0; i < count; i++) {
-        struct Faculty *newFaculty = (struct Faculty *)malloc(sizeof(struct Faculty));
-        if (newFaculty == NULL) {
-            perror("Memory allocation failed for a faculty!");
-            fclose(file);
-            exit(1);
-        }
-        fscanf(file, "%d %s %s %d %s", &newFaculty->id, newFaculty->name, newFaculty->department, &newFaculty->age, newFaculty->qualification);
-        newFaculty->next = NULL;
-        addFacultyToList(newFaculty);
+
+    int id, age;
+    char name[50], department[50], qualification[50];
+    while (fscanf(file, "%d %49s %49s %d %49s", &id, name, department, &age, qualification) != EOF) {
+        insertFaculty(id, name, department, age, qualification);
     }
+
     fclose(file);
-    printf("Faculty loaded successfully from %s.\n", filename);
+    printf("Faculty data loaded successfully from file.\n");
 }
+
+void writeFacultyToFile(const char *filename) {
+    FILE *file = openFile(filename);
+    if (file == NULL) {
+        return;
+    }
+
+    struct Faculty *temp = facultyHead;
+    while (temp != NULL) {
+        fprintf(file, "%d %s %s %d %s\n", temp->id, temp->name, temp->department, temp->age, temp->qualification);
+        temp = temp->next;
+    }
+
+    fclose(file);
+    printf("Faculty data written to file successfully.\n");
+}
+
+void saveFacultyData() {
+    writeFacultyToFile("faculty.dat");
+}
+
+void loadSectionFromFile(const char *filename) {
+    FILE *file = openFile(filename);
+    if (file == NULL) {
+        return;  // If file couldn't be opened, return
+    }
+
+    int section_id, student_id;
+    char section_name[50];
+    while (fscanf(file, "%d %49s %d", &section_id, section_name, &student_id) != EOF) {
+        struct Student *student = findStudentById(student_id);
+        if (student != NULL) {
+            struct Section *newSection = (struct Section *)malloc(sizeof(struct Section));
+            if (!newSection) {
+                printf("Memory allocation failed!\n");
+                exit(EXIT_FAILURE);
+            }
+
+            newSection->studentDetails = student;
+            newSection->section_id = section_id;
+            strncpy(newSection->section_name, section_name, sizeof(newSection->section_name) - 1);
+            newSection->section_name[sizeof(newSection->section_name) - 1] = '\0';
+            newSection->next = NULL;
+
+            addSectionToList(newSection);
+        } else {
+            printf("Warning: Student ID %d not found while loading section data.\n", student_id);
+        }
+    }
+
+    fclose(file);
+    printf("Section data loaded successfully from file.\n");
+}
+
+void writeSectionToFile(const char *filename) {
+    FILE *file = openFile(filename);
+    if (file == NULL) {
+        return;
+    }
+
+    struct Section *temp = sectionHead;
+    while (temp != NULL) {
+        if (temp->studentDetails != NULL) {
+            fprintf(file, "%d %s %d\n", temp->section_id, temp->section_name, temp->studentDetails->id);
+        }
+        temp = temp->next;
+    }
+
+    fclose(file);
+    printf("Section data written to file successfully.\n");
+}
+
+void saveSectionData() {
+    writeSectionToFile("sections.dat");
+}
+
 void loadFeesFromFile(const char *filename) {
-    FILE *file = fopen(filename, "r");
+    FILE *file = openFile(filename);
     if (file == NULL) {
-        perror("Could not open file to load fees.");
         return;
     }
-    int count;
-    fscanf(file, "%d", &count);
-    for (int i = 0; i < count; i++) {
-        struct Fees *newFees = (struct Fees *)malloc(sizeof(struct Fees));
-        newFees->studentDetails = (struct Student *)malloc(sizeof(struct Student));
-        if (newFees == NULL || newFees->studentDetails == NULL) {
-            perror("Memory allocation failed for a fees record!");
-            fclose(file);
-            exit(1);
+
+    int receipt_number, student_id;
+    float paid_amount;
+    while (fscanf(file, "%d %f %d", &receipt_number, &paid_amount, &student_id) != EOF) {
+        struct Student *student = findStudentById(student_id);
+        if (student != NULL) {
+            struct Fees *newFees = (struct Fees *)malloc(sizeof(struct Fees));
+            if (!newFees) {
+                printf("Memory allocation failed!\n");
+                exit(EXIT_FAILURE);
+            }
+
+            newFees->studentDetails = student;
+            newFees->receipt_number = receipt_number;
+            newFees->paid_amount = paid_amount;
+            newFees->next = NULL;
+
+            addFeesToList(newFees);
+        } else {
+            printf("Warning: Student ID %d not found while loading fee data.\n", student_id);
         }
-        fscanf(file, "%d %f %d %s %d %s", &newFees->receipt_number, &newFees->paid_amount,
-               &newFees->studentDetails->id, newFees->studentDetails->name,
-               &newFees->studentDetails->age, newFees->studentDetails->contactNumber);
-        newFees->next = NULL;
-        addFeesToList(newFees);
     }
+
     fclose(file);
-    printf("Fees loaded successfully from %s.\n", filename);
+    printf("Fee data loaded successfully from file.\n");
 }
-void loadSectionsFromFile(const char *filename) {
-    FILE *file = fopen(filename, "r");
+
+void writeFeesToFile(const char *filename) {
+    FILE *file = openFile(filename);
     if (file == NULL) {
-        perror("Could not open file to load sections.");
         return;
     }
-    int count;
-    fscanf(file, "%d", &count);
-    for (int i = 0; i < count; i++) {
-        struct Section *newSection = (struct Section *)malloc(sizeof(struct Section));
-        newSection->studentDetails = (struct Student *)malloc(sizeof(struct Student));
-        if (newSection == NULL || newSection->studentDetails == NULL) {
-            perror("Memory allocation failed for a section!");
-            fclose(file);
-            exit(1);
+
+    struct Fees *temp = feesHead;
+    while (temp != NULL) {
+        if (temp->studentDetails != NULL) {
+            fprintf(file, "%d %.2f %d\n", temp->receipt_number, temp->paid_amount, temp->studentDetails->id);
         }
-        fscanf(file, "%d %s %d %s %d %s", &newSection->section_id, newSection->section_name,
-               &newSection->studentDetails->id, newSection->studentDetails->name,
-               &newSection->studentDetails->age, newSection->studentDetails->contactNumber);
-        newSection->next = NULL;
-        addSectionToList(newSection);
+        temp = temp->next;
     }
+
     fclose(file);
-    printf("Sections loaded successfully from %s.\n", filename);
+    printf("Fee data written to file successfully.\n");
+}
+
+void saveFeesData() {
+    writeFeesToFile("fees.dat");
 }

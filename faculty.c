@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "faculty.h"
+#include "fileoperation.h"
 
 struct Faculty *facultyHead = NULL;
 
@@ -33,8 +34,11 @@ void insertFaculty(int id, const char *name, const char *department, int age, co
         newFaculty->next = current->next;
         current->next = newFaculty;
     }
+
     printf("Faculty added successfully in alphabetical order!\n");
+    saveFacultyData();
 }
+
 void deleteFaculty(int id) {
     if (facultyHead == NULL) {
         printf("Faculty list is empty.\n");
@@ -61,6 +65,7 @@ void deleteFaculty(int id) {
 
     free(temp);
     printf("Faculty deleted successfully!\n");
+    saveFacultyData();
 }
 
 void updateFaculty(int id) {
@@ -107,9 +112,8 @@ void updateFaculty(int id) {
     }
 
     printf("Faculty updated successfully!\n");
+    saveFacultyData();
 }
-
-
 
 void displayFacultyDetails() {
     if (facultyHead == NULL) {
@@ -177,6 +181,7 @@ void sortFacultiesByID() {
     facultyHead = mergeSortFaculty(facultyHead);
     printf("Faculties sorted by ID.\n");
     displayFacultyDetails();
+    saveFacultyData();
 }
 
 void sortFacultiesByName() {
@@ -199,6 +204,7 @@ void sortFacultiesByName() {
     }
     printf("Faculties sorted by Name.\n");
     displayFacultyDetails();
+    saveFacultyData();
 }
 
 void searchFacultyById(int id) {
@@ -216,7 +222,6 @@ void searchFacultyById(int id) {
 
     printf("Faculty with ID %d not found!\n", id);
 }
-
 
 int getTotalFacultyCount() {
     struct Faculty *temp = facultyHead;

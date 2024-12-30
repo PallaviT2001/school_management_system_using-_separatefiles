@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "student.h"
+#include "fileoperation.h"
 
 struct Student *studentHead = NULL;
 
@@ -30,9 +31,11 @@ void insertStudent(int id, const char *name, int age, const char *contactNumber)
         newStudent->next = current->next;
         current->next = newStudent;
     }
-    printf("Student added successfully in alphabetical order!\n");
-}
 
+    printf("Student added successfully in alphabetical order!\n");
+
+    saveStudentData();
+}
 
 void deleteStudent(int id) {
     if (studentHead == NULL) {
@@ -59,6 +62,8 @@ void deleteStudent(int id) {
 
     free(temp);
     printf("Student deleted successfully!\n");
+
+    saveStudentData();
 }
 
 void updateStudent(int id) {
@@ -100,6 +105,8 @@ void updateStudent(int id) {
     }
 
     printf("Student updated successfully!\n");
+
+    saveStudentData();
 }
 
 void displayStudentDetails() {
@@ -168,6 +175,7 @@ void sortStudentsByID() {
     studentHead = mergeSort(studentHead);
     printf("Students sorted by ID.\n");
     displayStudentDetails();
+    saveStudentData();
 }
 
 void sortStudentsByName() {
@@ -189,6 +197,7 @@ void sortStudentsByName() {
     }
     printf("Students sorted by Name.\n");
     displayStudentDetails();
+    saveStudentData();
 }
 
 void searchStudentById(int id) {
@@ -204,18 +213,6 @@ void searchStudentById(int id) {
         temp = temp->next;
     }
     printf("Student with ID %d not found!\n", id);
-}
-
-void addStudentToList(struct Student *newStudent) {
-    if (studentHead == NULL) {
-        studentHead = newStudent;
-    } else {
-        struct Student *temp = studentHead;
-        while (temp->next != NULL) {
-            temp = temp->next;
-        }
-        temp->next = newStudent;
-    }
 }
 
 int getTotalStudentCount() {

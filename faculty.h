@@ -18,12 +18,9 @@ void updateFaculty(int id);
 void displayFacultyDetails();
 void sortFacultiesByID();
 void sortFacultiesByName();
-
+void searchFacultyById(int id);
 void addFacultyToList(struct Faculty *newFaculty);
 int getTotalFacultyCount();
-
-void searchFacultyById(int id);
-
 struct Faculty* mergeFacultySortedLists(struct Faculty* left, struct Faculty* right);
 struct Faculty* getFacultyMiddle(struct Faculty* head);
 
