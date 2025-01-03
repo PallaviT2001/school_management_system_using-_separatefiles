@@ -9,7 +9,6 @@ struct Faculty {
     char qualification[50];
     struct Faculty *next;
 };
-
 extern struct Faculty *facultyHead;
 
 void insertFaculty(int id, const char *name, const char *department, int age, const char *qualification);

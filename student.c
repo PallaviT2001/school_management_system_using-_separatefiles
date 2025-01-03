@@ -31,10 +31,7 @@ void insertStudent(int id, const char *name, int age, const char *contactNumber)
         newStudent->next = current->next;
         current->next = newStudent;
     }
-
-    printf("Student added successfully in alphabetical order!\n");
-
-    saveStudentData();
+    writeToStudentFile("students.dat");
 }
 
 void deleteStudent(int id) {
@@ -53,7 +50,6 @@ void deleteStudent(int id) {
         printf("Student with ID %d not found!\n", id);
         return;
     }
-
     if (prev == NULL) {
         studentHead = temp->next;
     } else {
@@ -62,8 +58,7 @@ void deleteStudent(int id) {
 
     free(temp);
     printf("Student deleted successfully!\n");
-
-    saveStudentData();
+    deleteStudentInFile("students.dat", id);
 }
 
 void updateStudent(int id) {
@@ -90,23 +85,23 @@ void updateStudent(int id) {
     case 1:
         printf("Enter new name: ");
         scanf(" %[^\n]", temp->name);
+        updateStudentInFile("students.dat", id, temp->name, temp->age, temp->contactNumber);
         break;
     case 2:
         printf("Enter new age: ");
         scanf("%d", &temp->age);
+        updateStudentInFile("students.dat", id, temp->name, temp->age, temp->contactNumber);
         break;
     case 3:
         printf("Enter new contact number: ");
         scanf(" %[^\n]", temp->contactNumber);
+        updateStudentInFile("students.dat", id, temp->name, temp->age, temp->contactNumber);
         break;
     default:
         printf("Invalid choice! Please select a valid option.\n");
         return;
     }
-
     printf("Student updated successfully!\n");
-
-    saveStudentData();
 }
 
 void displayStudentDetails() {
@@ -175,7 +170,6 @@ void sortStudentsByID() {
     studentHead = mergeSort(studentHead);
     printf("Students sorted by ID.\n");
     displayStudentDetails();
-    saveStudentData();
 }
 
 void sortStudentsByName() {
@@ -197,7 +191,6 @@ void sortStudentsByName() {
     }
     printf("Students sorted by Name.\n");
     displayStudentDetails();
-    saveStudentData();
 }
 
 void searchStudentById(int id) {

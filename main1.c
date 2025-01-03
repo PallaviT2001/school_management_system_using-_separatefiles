@@ -54,13 +54,10 @@ enum SectionMenuChoice {
 
 int mainprogram() {
 
-    //createfiles();
-
-    loadFromFile("students.dat");
-    loadFacultyFromFile("faculty.dat");
+    loadStudentFromFile("students.dat");
+    loadFacultyFromFile("faculty_data.txt");
     loadSectionFromFile("sections.dat");
     loadFeesFromFile("fees.dat");
-
     if (!adminLogin()) {
         return 1;
     }
@@ -72,7 +69,7 @@ int mainprogram() {
         printf("3. Perform Fees Operations\n");
         printf("4. Perform Section Operations\n");
         //printf("5. Save all data to file\n");
-        printf("6. Exit\n");
+        printf("5. Exit\n");
         printf("Enter your choice: ");
         scanf("%d", &choice);
 
@@ -222,7 +219,6 @@ int mainprogram() {
             }
             break;
         }
-
         case FEES_OPERATIONS: {
             int feesChoice;
             printf("\n--- Fees Operations ---\n");

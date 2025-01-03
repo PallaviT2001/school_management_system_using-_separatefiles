@@ -8,7 +8,6 @@ struct Student {
     char contactNumber[20];
     struct Student *next;
 };
-
 extern struct Student *studentHead;
 
 void insertStudent(int id, const char *name, int age, const char *contactNumber);

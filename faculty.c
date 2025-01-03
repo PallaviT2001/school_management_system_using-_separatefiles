@@ -34,9 +34,7 @@ void insertFaculty(int id, const char *name, const char *department, int age, co
         newFaculty->next = current->next;
         current->next = newFaculty;
     }
-
-    printf("Faculty added successfully in alphabetical order!\n");
-    saveFacultyData();
+    writeFacultyToFile("faculty_data.txt");
 }
 
 void deleteFaculty(int id) {
@@ -46,7 +44,6 @@ void deleteFaculty(int id) {
     }
 
     struct Faculty *temp = facultyHead, *prev = NULL;
-
     while (temp != NULL && temp->id != id) {
         prev = temp;
         temp = temp->next;
@@ -56,7 +53,6 @@ void deleteFaculty(int id) {
         printf("Faculty with ID %d not found!\n", id);
         return;
     }
-
     if (prev == NULL) {
         facultyHead = temp->next;
     } else {
@@ -65,7 +61,7 @@ void deleteFaculty(int id) {
 
     free(temp);
     printf("Faculty deleted successfully!\n");
-    saveFacultyData();
+    deleteFacultyInFile("faculty_data.txt", id);
 }
 
 void updateFaculty(int id) {
@@ -110,9 +106,8 @@ void updateFaculty(int id) {
         printf("Invalid choice!\n");
         return;
     }
-
     printf("Faculty updated successfully!\n");
-    saveFacultyData();
+    updateFacultyInFile("faculty_data.txt",id,temp->name,temp->department,temp->age,temp->qualification);
 }
 
 void displayFacultyDetails() {
@@ -120,7 +115,6 @@ void displayFacultyDetails() {
         printf("No faculties available.\n");
         return;
     }
-
     printf("\nFaculty Details:\n");
     struct Faculty *temp = facultyHead;
     while (temp != NULL) {
@@ -181,7 +175,6 @@ void sortFacultiesByID() {
     facultyHead = mergeSortFaculty(facultyHead);
     printf("Faculties sorted by ID.\n");
     displayFacultyDetails();
-    saveFacultyData();
 }
 
 void sortFacultiesByName() {
@@ -204,7 +197,6 @@ void sortFacultiesByName() {
     }
     printf("Faculties sorted by Name.\n");
     displayFacultyDetails();
-    saveFacultyData();
 }
 
 void searchFacultyById(int id) {
@@ -235,7 +227,7 @@ int getTotalFacultyCount() {
     return count;
 }
 
-void addFacultyToList(struct Faculty *newFaculty) {
+/*void addFacultyToList(struct Faculty *newFaculty) {
     if (facultyHead == NULL) {
         facultyHead = newFaculty;
     } else {
@@ -245,4 +237,4 @@ void addFacultyToList(struct Faculty *newFaculty) {
         }
         temp->next = newFaculty;
     }
-}
+}*/

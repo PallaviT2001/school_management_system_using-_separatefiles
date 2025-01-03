@@ -30,10 +30,12 @@ FILE *openFile(const char *filename) {
     return file;
 }
 
-void loadFromFile(const char *filename) {
+//**************************************************************************************//
+
+void loadStudentFromFile(const char *filename) {
     FILE *file = openFile(filename);
     if (file == NULL) {
-        return;
+        return ;
     }
 
     int id, age;
@@ -41,15 +43,14 @@ void loadFromFile(const char *filename) {
     while (fscanf(file, "%d %49s %d %19s", &id, name, &age, contactNumber) != EOF) {
         insertStudent(id, name, age, contactNumber);
     }
-
     fclose(file);
-    printf("Data loaded successfully from file.\n");
+    printf("Student Data loaded successfully from file.\n");
 }
 
-void writeToFile(const char *filename) {
+void writeToStudentFile(const char *filename) {
     FILE *file = openFile(filename);
     if (file == NULL) {
-        return;  // If file couldn't be opened, return
+        return;
     }
 
     struct Student *temp = studentHead;
@@ -62,9 +63,68 @@ void writeToFile(const char *filename) {
     printf("Data written to file successfully.\n");
 }
 
-void saveStudentData() {
-    writeToFile("students.dat");
+long findStudentPosition(FILE *file, int student_id) {
+    rewind(file);
+    int id, age;
+    char name[50], contactNumber[20];
+    long position = ftell(file);
+
+    while (fscanf(file, "%d %49s %d %19s\n", &id, name, &age, contactNumber) != EOF) {
+        if (id == student_id) {
+            return position;
+        }
+        position = ftell(file);
+    }
+    return -1;
 }
+
+void updateStudentInFile(const char *filename, int student_id, const char *newName, int newAge, const char *newContact) {
+    FILE *file = fopen(filename, "r+");
+    if (file == NULL) {
+        printf("Error: Could not open the file for updating.\n");
+        return;
+    }
+
+    long position = findStudentPosition(file, student_id);
+    if (position == -1) {
+        printf("Student ID %d not found in the file.\n", student_id);
+        fclose(file);
+        return;
+    }
+
+    fseek(file, position, SEEK_SET);
+    fprintf(file, "%d %s %d %s\n", student_id, newName, newAge, newContact);
+
+    fclose(file);
+    printf("Student ID %d updated successfully in the file.\n", student_id);
+}
+
+void deleteStudentInFile(const char *filename, int student_id) {
+    FILE *file = fopen(filename, "r+");
+    if (file == NULL) {
+        printf("Error: Could not open the file.\n");
+        return;
+    }
+
+    long position = findStudentPosition(file, student_id);
+    if (position == -1) {
+        printf("Student ID %d not found in the file.\n", student_id);
+        fclose(file);
+        return;
+    }
+
+    fseek(file, position, SEEK_SET);
+
+    // Move the file pointer past the record (skip this entry)
+    int id, age;
+    char name[50], contactNumber[20];
+    fscanf(file, "%d %49s %d %19s\n", &id, name, &age, contactNumber);
+
+    printf("Student ID %d skipped for processing.\n", student_id);
+    fclose(file);
+}
+
+//*****************************************************************************//
 
 void loadFacultyFromFile(const char *filename) {
     FILE *file = openFile(filename);
@@ -98,14 +158,72 @@ void writeFacultyToFile(const char *filename) {
     printf("Faculty data written to file successfully.\n");
 }
 
-void saveFacultyData() {
-    writeFacultyToFile("faculty.dat");
+long findFacultyPosition(FILE *file, int faculty_id) {
+    rewind(file);
+    int id, age;
+    char name[50], department[50], qualification[50];
+    long position = ftell(file);
+
+    while (fscanf(file, "%d %49s %49s %d %49s\n", &id, name, department, &age, qualification) != EOF) {
+        if (id == faculty_id) {
+            return position;
+        }
+        position = ftell(file);
+    }
+    return -1;
 }
+
+void updateFacultyInFile(const char *filename, int faculty_id, const char *newName, const char *newDepartment, int newAge, const char *newQualification) {
+    FILE *file = fopen(filename, "r+");
+    if (file == NULL) {
+        printf("Error: Could not open the file for updating.\n");
+        return;
+    }
+
+    long position = findFacultyPosition(file, faculty_id);
+    if (position == -1) {
+        printf("Faculty ID %d not found in the file.\n", faculty_id);
+        fclose(file);
+        return;
+    }
+
+    fseek(file, position, SEEK_SET);
+    fprintf(file, "%d %s %s %d %s\n", faculty_id, newName, newDepartment, newAge, newQualification);
+
+    fclose(file);
+    printf("Faculty ID %d updated successfully in the file.\n", faculty_id);
+}
+
+void deleteFacultyInFile(const char *filename, int faculty_id) {
+    FILE *file = fopen(filename, "r+");
+    if (file == NULL) {
+        printf("Error: Could not open the file.\n");
+        return;
+    }
+
+    long position = findFacultyPosition(file, faculty_id);
+    if (position == -1) {
+        printf("Faculty ID %d not found in the file.\n", faculty_id);
+        fclose(file);
+        return;
+    }
+
+    fseek(file, position, SEEK_SET);
+
+    // Move the file pointer past the record (skip this entry)
+    int id, age;
+    char name[50], department[50], qualification[50];
+    fscanf(file, "%d %49s %49s %d %49s\n", &id, name, department, &age, qualification);
+
+    printf("Faculty ID %d skipped for processing.\n", faculty_id);
+    fclose(file);
+}
+//***************************************************************************//
 
 void loadSectionFromFile(const char *filename) {
     FILE *file = openFile(filename);
     if (file == NULL) {
-        return;  // If file couldn't be opened, return
+        return;
     }
 
     int section_id, student_id;
@@ -153,9 +271,7 @@ void writeSectionToFile(const char *filename) {
     printf("Section data written to file successfully.\n");
 }
 
-void saveSectionData() {
-    writeSectionToFile("sections.dat");
-}
+//*********************************************************************//
 
 void loadFeesFromFile(const char *filename) {
     FILE *file = openFile(filename);
@@ -186,7 +302,7 @@ void loadFeesFromFile(const char *filename) {
     }
 
     fclose(file);
-    printf("Fee data loaded successfully from file.\n");
+    printf("Fees data loaded successfully from file.\n");
 }
 
 void writeFeesToFile(const char *filename) {
@@ -207,6 +323,5 @@ void writeFeesToFile(const char *filename) {
     printf("Fee data written to file successfully.\n");
 }
 
-void saveFeesData() {
-    writeFeesToFile("fees.dat");
-}
+
+

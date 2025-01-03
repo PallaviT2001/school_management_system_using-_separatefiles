@@ -5,7 +5,6 @@
 #include "student.h"
 
 struct Fees *feesHead = NULL;
-FILE *file;
 
 void addFeesToList(struct Fees *newFees) {
     if (feesHead == NULL) {

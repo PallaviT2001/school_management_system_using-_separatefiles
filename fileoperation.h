@@ -6,22 +6,28 @@
 #include "fees.h"
 #include <stdio.h>
 
-// Function prototypes
-//FILE *openFile(const char *filename, const char *modeIfExists, const char *modeIfNotExists);
 FILE *openFile(const char *filename);
 struct Student *findStudentById(int student_id);
 
-void loadFromFile(const char *filename);
-void writeToFile(const char *filename);
-void saveStudentData();
+void loadStudentFromFile(const char *filename);
+void writeToStudentFile(const char *filename);
+void updateStudentInFile(const char *filename, int student_id, const char *newName, int newAge, const char *newContact);
+long findStudentPosition(FILE *file, int student_id);
+void deleteStudentInFile(const char *filename, int student_id);
+
 void loadFacultyFromFile(const char *filename);
 void writeFacultyToFile(const char *filename);
-void saveFacultyData();
+long findFacultyPosition(FILE *file, int faculty_id);
+void updateFacultyInFile(const char *filename, int faculty_id, const char *newName, const char *newDepartment, int newAge, const char *newQualification);
+void deleteFacultyInFile(const char *filename, int faculty_id);
+
 void loadSectionFromFile(const char *filename);
 void writeSectionToFile(const char *filename);
 void saveSectionData();
+
 void loadFeesFromFile(const char *filename);
 void writeFeesToFile(const char *filename);
 void saveFeesData();
 
-#endif // FILEOPERATION_H
+
+#endif
